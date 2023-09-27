@@ -1,0 +1,85 @@
+
+:root
+{
+    --bg-color:#171717;
+    --txt-color: #E0E0E0;
+    --intermediate-color: #7F7F7F;
+    --code-bg-color: #101010;
+    --type-color: coral;
+    --link-color: skyblue;
+}
+
+html, body
+{
+    background-color: var(--bg-color);
+    color: var(--txt-color);
+    font-size: 12pt;
+    font-family: sans-serif;
+}
+
+a
+{
+    color: var(--link-color);
+}
+
+code, .code
+{
+    font-family: monospace;
+    word-break: keep-all;
+}
+
+.code-type
+{
+    color: var(--type-color);
+    font-family: monospace;
+    word-break: keep-all;
+}
+
+table
+{
+    width: 100%;
+}
+
+td, th
+{
+    border: 1px solid var(--intermediate-color);
+    padding: 6px;
+}
+
+code.prettyprint, pre.prettyprint
+{
+    background-color: var(--code-bg-color);
+}
+
+p
+{
+    text-indent: 2ch;
+}
+
+button
+{
+    background-color: var(--code-bg-color);
+    color: var(--txt-color);
+    font: inherit;
+    border-radius: 5px;
+    border: 1px solid var(--intermediate-color);
+    padding: 2px;
+    margin: 6px;
+}
+
+button:hover
+{
+    background-color: var(--bg-color);
+}
+
+button:active
+{
+    background-color: var(--intermediate-color);
+    border-color: var(--code-bg-color);
+    color: var(--code-bg-color);
+}
+
+.toggle-click:not(.toggle-click-js-enabled .toggle-click)
+{
+    display: none;
+}
