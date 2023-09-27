@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>RIFF File Format</title>
+        <link rel="stylesheet" href="../../code-prettify/skins/sunburst.css"></link>
+        <link rel="stylesheet" href="../../style/common.css"></link>
+        <script src="../../code-prettify/prettify.js"></script>
+        <script src="../../js/toggleClick.js"></script>
+    </head>
+    <body onload="PR.prettyPrint();">
+        <h1 id="RIFF-Format">RIFF File Format</h1>
+        <p>
+            The <b>R</b>esource <b>I</b>nterchange <b>F</b>ile <b>F</b>ormat was developed by Microsoft and IBM in 1991.
+            It is a container format that stores data in "chunks." The max size of a RIFF file is 4 GiB + 8 B, because of the
+            use of the unsigned 32-bit integer telling the size of the file at the start (plus the ID, size, and padding byte).
+        </p>
+        <p>
+            A RIFF file consists of one <a href="#RIFF">RIFF chunk</a> and any possible subchunks. A subchunk is a chunk that is a "child"
+            of another chunk. Every chunk is a subchunk of the over-arching RIFF chunk.
+            There are some "standard" chunks, listed <a href="#Std-Chunks">below</a>, however a chunk can have any name and contain
+            any arbitrary data.
+        </p>
+        <p>
+            Alternatively, a file could start with <code>RIFX</code> instead of <code>RIFF</code>.
+            This means that the size will be stored in big-endian instead of little-endian.
+            <a href="RIFX">Read more about the RIFX chunk below.</a>
+        </p>
+        <p>
+            A hierarchy might look something like this:
+            <ul>
+                <li>RIFF Chunk</li>
+                <ul>
+                    <li>LIST Chunk</li>
+                    <ul>
+                        <li>sick Chunk</li>
+                        <li>COOL Chunk</li>
+                    </ul>
+                    <li>epic Chunk</li>
+                    <li>RAD&Backslash;x20 Chunk</li>
+                </ul>
+            </ul>
+        </p>
+        <hr />
+        <h2 id="Chunk">Chunk Structure</h2>
+        <p>
+            "LE" means Little Endian. <code>uint</code> means unsigned integer.
+        </p>
+        <table>
+            <tbody>
+                <tr><th>Offset</th><th>Bytes</th><th>Name</th><th>Type</th><th>Description</th><th>Exmaples</th></tr>
+                <tr>
+                    <td><code>0x0</code></td>
+                    <td><code>4</code></td>
+                    <td id="ID">ID</td>
+                    <td class="code-type">uint8[4]</td>
+                    <td>
+                        4 (case-sensitive) ASCII characters, not null-terminated. Reads out a tag ID.
+                        It doesn't have to all be letters, for example <a href="WAV.html#fmt">WAV's
+                            <code>fmt&Backslash;x20</code></a>
+                        chunk. The last character is a space, which I am representing using the ASCII escape code
+                        <code>&Backslash;x20</code>.
+                    </td>
+                    <td>
+                        <code>RIFF</code>, <code>LIST</code>, <code>fmt&Backslash;x20</code>, <code>data</code>
+                    </td>
+                </tr>
+                <tr>
+                    <td><code>0x4</code></td>
+                    <td><code>4</code></td>
+                    <td id="Size">Size</td>
+                    <td class="code-type">LE&nbsp;uint32</td>
+                    <td>
+                        The size of the rest of the chunk in bytes.
+                        This does not include the 8 bytes making this and the ID fields.
+                    </td>
+                    <td>36, 43, 4702</td>
+                </tr>
+                <tr>
+                    <td><code>0x8</code></td>
+                    <td>~</td>
+                    <td id="Data">Data</td>
+                    <td>~</td>
+                    <td>
+                        This is the chunk data itself.
+                        The size of this chunk is the same as specified by the Size field.
+                        This data may be determined by some other format (such as the
+                        <a href="./WAV.html">WAV format</a>).
+                    </td>
+                    <td>...</td>
+                </tr>
+                <tr>
+                    <td>~</td>
+                    <td><code>0</code> - <code>1</code></td>
+                    <td id="Padding">Padding</td>
+                    <td class="code-type">uint8</td>
+                    <td>
+                        If the Size field is an odd number,
+                        this padding byte will be present. Otherwise, it does not exist.
+                    </td>
+                    <td><code>0x0</code></td>
+                </tr>
+            </tbody>
+        </table>
+        <hr />
+        <h3 id="RIFF-LIST-Chunk"><code>RIFF</code>, <code>RIFX</code>, <code>LIST</code> Chunk Structure</h3>
+        <p>
+            &Tab;The <code>RIFF</code> (or <code>RIFX</code>) and <code>LIST</code> chunks have a special field before their payloads.
+            Their data field consists of the subchunks they hold.
+        </p>
+
+        <table>
+            <tbody>
+                <tr><th>Offset</th><th>Bytes</th><th>Name</th><th>Type</th><th>Description</th><th>Exmaples</th></tr>
+                <tr>
+                    <td class="code">0</td>
+                    <td class="code">4</td>
+                    <td>ID</td>
+                    <td class="code-type">uint8[4]</td>
+                    <td>4 ASCII characters. The ID of the chunk. <code>LIST</code> for this example.
+                    <td class="code">LIST</td>
+                </tr>
+                <tr>
+                    <td class="code">0x4</td>
+                    <td class="code">4</td>
+                    <td>Size</td>
+                    <td class="code-type">LE&nbsp;uint32</td>
+                    <td>The size in bytes of the remeaining part of the chunk.</td>
+                    <td>32, 47, 9023</td>
+                </tr>
+                <tr>
+                    <td class="code">0x8</td>
+                    <td class="code">4</td>
+                    <td>Format</td>
+                    <td class="code-type">uint8[4]</td>
+                    <td>
+                        4 (case-sensitive) ASCII characters. This could be considered part of the data field
+                        for these chunks. It <i>is</i> included in the Size field. This can be any arbitrary
+                        4 chars.
+                        <ul>
+                            <li>
+                                For <code>RIFF</code> or <code>RIFX</code> chunks the file format.
+                                For example, would indicate that this is an AVI or WAVE file.
+                            </li>
+                            <li>
+                                For a <code>LIST</code> chunk the type of list.
+                            </li>
+                        </ul>
+                    </td>
+                    <td>
+                        &nbsp;
+                        <ul>
+                            <li><code>WAVE</code>, <code>AVI&Backslash;x01</code></li>
+                            <li><code>INFO</code></li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td><code>0x8</code></td>
+                    <td>~</td>
+                    <td id="Data">Data</td>
+                    <td>~</td>
+                    <td>
+                        This is the chunk data itself.
+                        The size of this chunk is the same as specified by the Size field (minus 4 for the
+                        Format field).
+                    </td>
+                    <td>...</td>
+                </tr>
+                <tr>
+                    <td>~</td>
+                    <td><code>0</code> - <code>1</code></td>
+                    <td id="Padding">Padding</td>
+                    <td class="code-type">uint8</td>
+                    <td>
+                        If the Size field is an odd number,
+                        this padding byte will be present. Otherwise, it does not exist.
+                    </td>
+                    <td><code>0x0</code></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 id="Std-Chunks">Standard Chunks</h2>
+
+        <h3 id="RIFF">RIFF Chunk</h3>
+
+        <p>
+            This chunk is the ultimate container that holds every other chunk.
+            There is one RIFF chunk and it is the first chunk in the file (if it is not it is an invalid
+            RIFF file). This means that any valid RIFF file will start with this chunk's ID in ASCII, <code>RIFF</code>.
+            This also means that this chunk's Size field is equal to the file size minus 8.
+        </p>
+
+        <h4 id="RIFX">RIFX Chunk</h4>
+
+        <p>
+            The RIFX chunk can be used instead of the RIFF chunk (I lied when I said it can only start with a RIFF chunk).
+            The vast majority of the time <code>RIFX</code> will not be used. In the case that it is used, <code>RIFX</code>
+            means that the size of the chunk in the Size field is big-endian.
+        </p>
+
+        <h3 id="LIST">LIST Chunk</h3>
+
+        <h4 id="INFO">INFO List Type</h4>
+
+        <p>
+            This chunk provides a standard way to document certain information.
+            The ID of this chunk is ASCII <code>INFO</code>.
+            This chunk essentially holds a bunch of key-value pairs, some of which are standardized.
+            The idea behind this chunk is that it is standard so that even if a program does not know the
+            actual format/purpose of the RIFF file, it can still gather certain information from it.
+            This chunk is normally placed first (of course inside of the RIFF chunk). It does not have to be,
+            however this ensures that a program will read it, and not just "give up" after running into a lot
+            of unknown data.
+        </p>
+        <p>
+            Standard tags have all uppercase tag IDs.
+            Non-standard tags tag IDs should be all lowercase.
+
+            The values of these tags should be null-terminated for standard tags.
+            Non-standard tag values may or may not be null-terminated.
+            If a value is null-terminated, it will be included in the size field (see below).
+        </p>
+
+        <button class="toggle-click toggle-elem-INFO-Tags-List">Toggle Standard INFO Table</button>
+        <table id="INFO-Tags-List">
+            <tbody>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                </tr>
+                <tr><td class="code">AGES</td><td>Rated</td></tr>
+                <tr><td class="code">CMNT</td><td>Comment</td></tr>
+                <tr><td class="code">CODE</td><td>Encoded By</td></tr>
+                <tr><td class="code">COMM</td><td>Comments</td></tr>
+                <tr><td class="code">DIRC</td><td>Directory</td></tr>
+                <tr><td class="code">DISP</td><td>Sound Scheme Title</td></tr>
+                <tr><td class="code">DTIM</td><td>Date Time Original</td></tr>
+                <tr><td class="code">GENR</td><td>Genre</td></tr>
+                <tr><td class="code">IARL</td><td>Archival Location</td></tr>
+                <tr><td class="code">IART</td><td>Artist</td></tr>
+                <tr><td class="code">IAS1</td><td></td></tr>
+            </tbody>
+        </table>
+
+        <p>
+            Here is what the data section of a <code>LIST</code> chunk of type <code>INFO</code> looks like.
+            This data would immediately come after the Format field that says ASCII <code>INFO</code>.
+        </p>
+
+        <table>
+            <tbody>
+                <tr><th>Offset</th><th>Bytes</th><th>Name</th><th>Type</th><th>Description</th><th>Exmaples</th></tr>
+                <tr>
+                    <td class="code">0x0</td>
+                    <td class="code">4</td>
+                    <td>Tag ID</td>
+                    <td class="code-type">uint8[4]</td>
+                    <td>
+                        4 (case-sensitive) characters making up a tag ID.
+                        Standard tag IDs should be all uppercase, and non-standard IDs all lowercase.
+                    </td>
+                    <td><code>IART</code>, <code>colr</code></td>
+                </tr>
+                <tr>
+                    <td class="code">0x4</td>
+                    <td class="code">4</td>
+                    <td>Value Size</td>
+                    <td class="code-type">LE&nbsp;uint32</td>
+                    <td>
+                        The size of the value of this tag in bytes.
+                        If the value is null-terminated, this size includes the null.
+                    </td>
+                    <td><code>11</code>, <code>9</code></td>
+                </tr>
+                <tr>
+                    <td class="code">0x8</td>
+                    <td>~</td>
+                    <td>Value</td>
+                    <td class="code-type">uint8[~]</td>
+                    <td>
+                        The value of the tag as a string made up of ASCII characters.
+                        If this is a standard tag, it will be null-terminated.
+                        If it is non-standard, it may or may not be null-terminated.
+                    </td>
+                    <td><code>Lil&Backslash;x20Fridge&Backslash;x00</code>, <code>orangeRed</code></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>
+            This key-value structure is repeated enough times until the size satisfies that of the
+            <code>LIST</code> chunk's Size field.
+        </p>
+
+
+        <h3 id="JUNK">JUNK Chunk</h3>
+        
+        <p>
+            The <code>JUNK</code> chunk is used as a space filler to align chunks to boundaries.
+
+        </p>
+
+        <h2 id="Examples">Examples</h2>
+
+        <h3 id="C-Read-Chunk">Read Chunk in C</h3>
+        
+        <p>
+            This example reads a chunk in C. If you use <code>malloc()</code> as I did, you could even return the
+            data buffer (and return <code>NULL</code> on fail), just remember to <code>free()</code> it!
+        </p>
+        <pre class="prettyprint lang-c">// For FILE, fread, and size_t
+#include &lt;stdio.h&gt;
+// For malloc and free
+#include &lt;stdlib.h&gt;
+// For bool, true, and false
+#include &lt;stdbool.h&gt;
+// For uint32_t and uint8_t
+#include &lt;stdint.h&gt;
+// For memcmp
+#include &lt;string.h&gt;
+
+bool readChunk(FILE *file)
+{
+    size_t countRead;
+
+    // Four character array for chunk ID
+    char id[4];
+    countRead = fread(id, sizeof id, 1, file);
+    // If we couldn't read it return
+    if(countRead == 0)
+    {
+        fprintf(stderr, "Couldn't read chunk ID.");
+        return false;
+    }
+
+    // Example for testing for specific ID:
+    // We use memcmp instead of strcmp because "id" is not null-terminated and therefore
+    // would never end as far as strcmp is concerned, meaning that it and a string literal
+    // would never be equal.
+    if(memcmp(id, "RIFF", sizeof id) == 0)
+    {
+        printf("We found the RIFF chunk!");
+    }
+    
+    // Get size of data in bytes
+    uint32_t dataSize;
+    countRead = fread(&dataSize, sizeof(uint32_t), 1, file);
+    // If we couldn't read it return
+    if(countRead == 0)
+    {
+        fprintf(stderr, "Couldn't read chunk size.");
+        return false;
+    }
+
+    // If size of data is odd...
+    if(dataSize % 2)
+    {
+        // ...then let's consume that extra padding byte.
+        // We have to give it something to write to (no we can't just pass NULL or something).
+        // We will just give it a random byte variable we don't care about.
+        uint8_t padding;
+        fread(&padding, sizeof(uint8_t), 1, file);
+        // Not checking if it read properly because it doesn't really matter
+    }
+
+    // We're using malloc here to put the data into, since it could be really big.
+    // I don't like using the heap but it is probably the best option here;
+    // if you wanted to you could use VLAs or alloca, but I advise against it because this could be huge.
+    // If you know that the data is small, using an array or alloca might be okay.
+    uint8_t* data = malloc(dataSize);
+
+    countRead = fread(data, dataSize, 1, file);
+    // If we couldn't read it return
+    if(countRead == 0)
+    {
+        // Remember to free before returning
+        free(data);
+        
+        fprintf(stderr, "Couldn't read chunk data.");
+        return false;
+    }
+
+    // Do something with the data...
+
+    // Do not forget to free the data when you're done if using malloc
+    free(data);
+
+    return true;
+}</pre>
+
+    <h1 id="Related">Related</h1>
+
+    <ul>
+        <li><a href="WAV.html">WAV File Format</a></li>
+    </ul>
+
+    </body>
+</html>
