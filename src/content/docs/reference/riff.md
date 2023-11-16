@@ -33,7 +33,7 @@ A hierarchy might look something like this:
 "LE" means Little Endian. `u8` would mean an unsigned 8-bit integer.
 
 | Offset | Bytes | Name | Type | Description | Examples |
-|---|---|---|---|--:|---|
+|---|---|---|---|---|---|
 | `0x0` | `4` | ID | `u8[4]` | 4 (case-sensitive) ASCII characters, not null-terminated. Reads out a tag ID. It doesn't have to all be letters, for example [WAV's](reference/WAV) `fmt∖x20` chunk. The last character is a space, which I am representing using the ASCII escape code `∖x20`. | `RIFF`, `LIST`, `fmt\x20`, `data` |
 | `0x4` | `4` | Size | `LE u32` | The size of the rest of the chunk in bytes. This does not include the 8 bytes making this and the ID fields. | 36, 43, 4702 |
 | `0x8` | ~ | Data | ~ | This is the chunk data itself. The size of this chunk is the same as specified by the Size field. This data may be determined by some other format (such as the [WAV format](reference/WAV)). | ... |
@@ -45,6 +45,7 @@ The `RIFF` (or `RIFX`) and `LIST` chunks have a special field before their paylo
 Their data field consists of the subchunks they hold.
 
 | Offset | Bytes | Name | Type | Description | Examples |
+|--------|-------|------|------|-------------|----------|
 | `0x0` | `4` | ID | `u8[4]` | 4 ASCII characters. The ID of the chunk. | `RIFF`, `RIFX`, `LIST` |
 | `0x4` | `4` | Size | `LE u32` | The size in bytes of the remaining part of the chunk. | 32, 47, 9023 |
 | `0x8` | `4` | Format | `u8[4]` | 4 (case-sensitive) ASCII characters. This could be considered part of the data field for these chunks. It _is_ included in the Size field. This can be any arbitrary 4 characters. For `RIFF`/`RIFX` chunks the file format. For example, would indicate that this is an AVI or WAVE file. Or for a `LIST` chunk the type of list. | `WAVE`, `AVI\x01`, `INFO`
@@ -87,6 +88,7 @@ Non-standard tag values may or may not be null-terminated.
 If a value is null-terminated, it will be included in the size field (see below).
 
 | ID      | Name |
+|---------|------|
 | `AGES`  | Rated |
 | `CMNT`  | Comment |
 | `CODE`  | Encoded By |
@@ -104,9 +106,10 @@ Here is what the data section of a `LIST` chunk of type `INFO` looks like.
 This data would immediately come after the Format field that says ASCII `INFO`.
 
 | Offset | Bytes | Name       | Type     | Description | Examples |
-| `0x0`  | `4`   | Tag ID     | u8[4]    | 4 (case-sensitive) characters making up a tag ID. Standard tag IDs should be all uppercase, and non-standard IDs all lowercase. | `IART`, `colr` |
+|--------|-------|------------|----------|-------------|----------|
+| `0x0`  | `4`   | Tag ID     | `u8[4]`  | 4 (case-sensitive) characters making up a tag ID. Standard tag IDs should be all uppercase, and non-standard IDs all lowercase. | `IART`, `colr` |
 | `0x4`  | `4`   | Value Size | `LE u32` | The size of the value of this tag in bytes. If the value is null-terminated, this size includes the null. | `11`, `9` |
-| `0x8`  | ~     | Value      | u8[~]    | The value of the tag as a string made up of ASCII characters. If this is a standard tag, it will be null-terminated. If it is non-standard, it may or may not be null-terminated. | `Lil\x20Fridge\x00`, `orangeRed` |
+| `0x8`  | ~     | Value      | `u8[~]`  | The value of the tag as a string made up of ASCII characters. If this is a standard tag, it will be null-terminated. If it is non-standard, it may or may not be null-terminated. | `Lil\x20Fridge\x00`, `orangeRed` |
 
 This key-value structure is repeated enough times until the size satisfies that of the
 `LIST` chunk's Size field.
