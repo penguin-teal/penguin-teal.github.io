@@ -3,8 +3,6 @@ title: RIFF Format
 description: Reference of the RIFF File Format used to store a variety of data.
 ---
 
-## RIFF Format
-
 The **R**esource **I**nterchange **F**ile **F**ormat was developed by Microsoft and IBM in 1991.
 It is a container format that stores data in "chunks." The max size of a RIFF file is 4 GiB + 8 B, because of the
 use of the unsigned 32-bit integer telling the size of the file at the start (plus the ID, size, and padding byte).
