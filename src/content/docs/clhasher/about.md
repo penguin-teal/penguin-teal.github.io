@@ -1,11 +1,11 @@
 ---
-title: Example Guide
-description: A guide in my new Starlight docs site.
+title: clhasher
+description: A hashing app.
 ---
 
-Guides lead a user through a specific task they want to accomplish, often with a sequence of steps.
-Writing a good guide requires thinking about what your users are trying to do.
+clhasher is a Linux command line app that can produce simple hashes, but with
+many options.
 
-## Further reading
+More information is available on the [GitHub repository](https://github.com/penguin-teal/clhasher)
+and it is fully documented in the README.
 
-- Read [about how-to guides](https://diataxis.fr/how-to-guides/) in the Diátaxis framework
