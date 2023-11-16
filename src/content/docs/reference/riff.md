@@ -103,7 +103,10 @@ If a value is null-terminated, it will be included in the size field (see below)
 Here is what the data section of a `LIST` chunk of type `INFO` looks like.
 This data would immediately come after the Format field that says ASCII `INFO`.
 
-| |
+| Offset | Bytes | Name       | Type     | Description | Examples |
+| `0x0`  | `4`   | Tag ID     | u8[4]    | 4 (case-sensitive) characters making up a tag ID. Standard tag IDs should be all uppercase, and non-standard IDs all lowercase. | `IART`, `colr` |
+| `0x4`  | `4`   | Value Size | `LE u32` | The size of the value of this tag in bytes. If the value is null-terminated, this size includes the null. | `11`, `9` |
+| `0x8`  | ~     | Value      | u8[~]    | The value of the tag as a string made up of ASCII characters. If this is a standard tag, it will be null-terminated. If it is non-standard, it may or may not be null-terminated. | `Lil\x20Fridge\x00`, `orangeRed` |
 
 This key-value structure is repeated enough times until the size satisfies that of the
 `LIST` chunk's Size field.
