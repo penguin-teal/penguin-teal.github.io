@@ -5,7 +5,7 @@ template: splash
 hero:
   tagline: Stuff I've looked at
   image:
-    file: ../../assets/houston.webp
+    file: ../../assets/pfp.png
   actions:
     - text: See a project
       link: https://github.com/penguin-teal/clhasher
@@ -21,7 +21,10 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
 ## Check it Out
 
 <CardGrid stagger>
+    <Card title="clhasher" icon="setting">
+        [Check out my Linux hashing CL app.](clhasher/about)
+    </Card>
 	<Card title="RIFF Format" icon="document">
-		[My own reference for the RIFF file format.](reference/riff/)
+		[My reference for the RIFF file format.](reference/riff/)
 	</Card>
 </CardGrid>
