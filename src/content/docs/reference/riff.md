@@ -111,7 +111,7 @@ This data would immediately come after the Format field that says ASCII `INFO`.
 This key-value structure is repeated enough times until the size satisfies that of the
 `LIST` chunk's Size field.
 
-## `JUNK` Chunk
+### `JUNK` Chunk
 
 The `JUNK` chunk is used as a space filler to align chunks to boundaries.
 
