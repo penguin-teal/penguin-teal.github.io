@@ -85,19 +85,33 @@ The values of these tags should be null-terminated for standard tags.
 Non-standard tag values may or may not be null-terminated.
 If a value is null-terminated, it will be included in the size field (see below).
 
-| ID      | Name |
+| ID      | Tag Name |
 |---------|------|
 | `AGES`  | Rated |
 | `CMNT`  | Comment |
-| `CODE`  | Encoded By |
+| `CODE`  | EncodedBy |
 | `COMM`  | Comments |
 | `DIRC`  | Directory |
-| `DISP`  | Sound Scheme Title |
-| `DTIM`  | Date Time Original |
+| `DISP`  | SoundSchemeTitle |
+| `DTIM`  | DateTimeOriginal |
 | `GENR`  | Genre |
-| `IARL`  | Archival Location |
+| `IARL`  | ArchivalLocation |
 | `IART`  | Artist |
-| `IAS1`  |        |
+| `IAS1`  | FirstLanguage |
+| `IAS2`  | SecondLanguage |
+| `IAS3`  | ThirdLanguage |
+| `IAS4`  | FourthLanguage |
+| `IAS5`  | FifthLanguage |
+| `IAS6`  | SixthLanguage |
+| `IAS7`  | SeventhLanguage |
+| `IAS8`  | EighthLanguage |
+| `IAS9`  | NinthLanguage |
+| `IBSU`  | BaseURL |
+| `ICAS`  | DefaultAudioStream |
+| `ICDS`  | CostumeDesigner |
+| `ICMS`  | Commisioned |
+| `ICMT`  | Comment |
+| `ICNM`  | Cinematographer |
 
 
 Here is what the data section of a `LIST` chunk of type `INFO` looks like.
