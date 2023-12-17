@@ -125,15 +125,15 @@ data buffer (and return <code>NULL</code> on fail), just remember to <code>free(
 
 ```c
 // For FILE, fread, and size_t
-#include &lt;stdio.h&gt;
+#include <stdio.h>
 // For malloc and free
-#include &lt;stdlib.h&gt;
+#include <stdlib.h>
 // For bool, true, and false
-#include &lt;stdbool.h&gt;
+#include <stdbool.h>
 // For uint32_t and uint8_t
-#include &lt;stdint.h&gt;
+#include <stdint.h>
 // For memcmp
-#include &lt;string.h&gt;
+#include <string.h>
 
 bool readChunk(FILE *file)
 {
