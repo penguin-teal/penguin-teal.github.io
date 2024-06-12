@@ -92,5 +92,5 @@ Edit the `msgstr` field to the translation for the English in `msgid`.
 
 ### More
 
-- [OpenWeather Refined Custom API Keys](openweather/custom-keys/)
+- [OpenWeather Refined Custom API Keys](../custom-keys/)
 
