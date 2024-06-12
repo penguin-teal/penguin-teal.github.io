@@ -29,7 +29,7 @@ To guarantee you can always use the provider you want, you can sign up for
 your own API key for free with the directions below. This makes you subject
 to your own rates, and you're never going to exceed 1 million requests per
 month or 60 requests per second alone. Note that you can still choose which
-provider you want without your own key, it'sw just possible it will hit the
+provider you want without your own key, it's just possible it will hit the
 rate limit and temporarily cease to work.
 
 You could also do this if you
