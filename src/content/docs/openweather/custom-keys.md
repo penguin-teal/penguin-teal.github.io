@@ -1,5 +1,5 @@
 ---
-title: OpenWeather Refined
+title: OpenWeather Refined Custom API Keys
 description: Using custom keys in OpenWeather Refined
 ---
 
