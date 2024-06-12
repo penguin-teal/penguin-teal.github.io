@@ -21,8 +21,8 @@ which is the default, that tries a random provider on start-up. If that
 provider returns an error, the client will cycle through until one works.
 
 However, if all providers get used up, which happened shortly after the
-addition of a second provider ([which also happened to accompany a bug
-](https://github.com/penguin-teal/gnome-openweather/issues/32)), then no
+addition of a second provider ([which also happened to accompany a
+bug](https://github.com/penguin-teal/gnome-openweather/issues/32)), then no
 data can be fetched. The solution for this is to just add more providers.
 
 To guarantee you can always use the provider you want, you can sign up for
