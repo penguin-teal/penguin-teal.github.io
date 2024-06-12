@@ -90,3 +90,7 @@ this extension I have made a lot of UI additions, and I only speak English!
 Translations can be made by editing the language's file `./po/*.po`.
 Edit the `msgstr` field to the translation for the English in `msgid`.
 
+### More
+
+- [OpenWeather Refined Custom API Keys](openweather/custom-keys/)
+
