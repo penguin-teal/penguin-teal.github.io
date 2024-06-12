@@ -38,7 +38,11 @@ export default defineConfig({
 				{
 					label: 'Reference',
 					autogenerate: { directory: 'reference' },
-				}
+				},
+                {
+                    label: 'OpenWeather Refined',
+                    autogenerate: { directory: 'openweather' }
+                }
 			],
 		}),
 	],
